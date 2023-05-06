@@ -7,6 +7,7 @@ import { SideBar } from './UserPage/components/SideBar';
 import { SurveyMetaDataType } from './UserPage/Interfaces';
 import { globalTheme } from './theme';
 import { Survey } from './UserPage/components/Survey';
+import { AddSurvey } from './AdminPage/components/AddSurvey';
 
 function App() {
   const surveyData: SurveyMetaDataType[] = [
@@ -42,7 +43,8 @@ function App() {
 
   return (
     <ThemeProvider theme={globalTheme}>
-      {modalOpen &&
+      <AddSurvey></AddSurvey>
+      {/* {modalOpen &&
         <LoginModal 
           modalOpen={modalOpen} 
           onChangeIsAdmin={changeIsAdmin} 
@@ -60,7 +62,7 @@ function App() {
         onChangeBarOpen={changeBarOpen} 
         barOpen={barOpen} 
       />
-      <MainPage recentSurvey={surveyData}/>
+      <MainPage recentSurvey={surveyData}/> */}
     </ThemeProvider>
   );
 }

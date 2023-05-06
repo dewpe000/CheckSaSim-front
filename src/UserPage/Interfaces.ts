@@ -17,6 +17,14 @@ interface SurveyInfoType {
     answerData : AnswerInfoType[];
 };
 
+interface newSurveyDataType {
+    weekNum : number;
+    surveyTitle : string;
+    answerList : any;
+    questList : any;
+    isReverseList : any;
+}
+
 interface SurveyMetaDataType {
     surveyTitle: string,
     week: number,
@@ -27,5 +35,6 @@ export type {
     SurveyInfoType,
     AnswerInfoType,
     QuestionInfoType,
+    newSurveyDataType,
     SurveyMetaDataType
 }

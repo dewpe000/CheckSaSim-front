@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { Box, Paper, Stack, RadioGroup, Radio, 
     Button, Container, Typography } from '@mui/material';
 import { SurveyInfoType, AnswerInfoType, QuestionInfoType } from '../Interfaces'
@@ -10,6 +10,19 @@ interface SurveyProps {
 export function Survey(props : SurveyProps) {
 
     let [surveyId, setSurveyId] = useState(props.surveyId);
+
+    //TODO : surveyId로 HTTP
+    useEffect(()=> {
+        console.log("SDASDASDASDAS")
+    }, []);
+
+    fetch("http://13.209.90.70:80/survey/" + surveyId)
+        .then(res => res.json())
+        .then(json => console.log(json));
+    // let fetchingData : SurveyInfoType = [];
+
+
+
     let [isBtnActive, setIsBtnActive] = useState(false);
     let [totalScore, setTotalScore] = useState(-1);
     let [surveyData, setSurveyData] = useState({
@@ -33,7 +46,8 @@ export function Survey(props : SurveyProps) {
     let numAnswer : number = surveyData.answerData.length;
 
     // 체크 박스 변경시 이벤트
-    const changeScore = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const changeScore = (event: ChangeEvent<HTMLInputElement>) => {
+
         let hasZero : boolean = false;
         surveyData.questionData.forEach(function (quest: QuestionInfoType) {
             if (quest.questId === Number(event.target.name)) {
@@ -63,6 +77,7 @@ export function Survey(props : SurveyProps) {
 
         setTotalScore(sum);
     };
+
 
     return (
         <Container maxWidth="lg" sx={{mt: 3}}>
@@ -99,7 +114,7 @@ export function Survey(props : SurveyProps) {
                         <Paper sx={{ width:"40%", height:"3rem"}}>
                             <RadioGroup row
                                 onChange={changeScore}>
-                                {surveyData.answerData.map(ans => (
+                                {surveyData.answerData.map((ans : AnswerInfoType) => (
                                     <Box sx={{textAlign:"center", width:100/numAnswer + "%"}}
                                         key={quest.questId* 1000 + ans.answerId}>
                                         <Radio
