@@ -3,27 +3,28 @@ import { ThemeProvider } from '@mui/material/styles';
 import { LoginModal } from './Login/LoginModal';
 import { Header } from './Header/Header';
 import { MainPage } from './UserPage/components/MainPage';
-import { SideBar, surveyInfoType } from './UserPage/components/SideBar';
+import { SideBar } from './UserPage/components/SideBar';
+import { SurveyMetaDataType } from './UserPage/Interfaces';
 import { globalTheme } from './theme';
 import { Survey } from './UserPage/components/Survey';
 import { AddSurvey } from './AdminPage/components/AddSurvey';
 
 function App() {
-  const surveyData: surveyInfoType[] = [
+  const surveyData: SurveyMetaDataType[] = [
     {
-      title: "MBTI 검사1",
+      surveyTitle: "MBTI 검사1",
       week: 1,
-      id: 1,
+      surveyId: 1,
     },
     {
-      title: "MBTI 검사2",
+      surveyTitle: "MBTI 검사2",
       week: 2,
-      id: 2,
+      surveyId: 2,
     },
     {
-      title: "MBTI 검사2",
-      week: 2,
-      id: 2,
+      surveyTitle: "MBTI 검사3",
+      week: 3,
+      surveyId: 3,
     },
   ]
   const [barOpen, setBarOpen] = useState(false);
@@ -51,6 +52,7 @@ function App() {
         />
       }
       <Header 
+        isAdmin={isAdmin}
         onChangeBarOpen={changeBarOpen} 
         onChangeModalOpen={changeModalOpen} 
       />

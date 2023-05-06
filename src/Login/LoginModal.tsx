@@ -1,5 +1,5 @@
 import { useState, ChangeEvent } from 'react';
-import { Box, Typography, Modal, 
+import { Box, Typography, Modal, InputLabel,
     Button, TextField, Alert, Stack } from '@mui/material';
 
 interface LoginModalProps {
@@ -20,14 +20,30 @@ export function LoginModal(props : LoginModalProps) {
     const pwChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setPw(e.target.value);
     }
-    const loginButtonClickHandler = () => {
+    const loginButtonClickHandler = async () => {
         if (!id || !pw) { // 아이디 비밀번호 필수 입력 필드 체크
             setFieldCheck(true);
             return;
         }
-        setLoginSuccess("error");
-        // 성공했을 시 
-        //props.onChangeIsAdmin(true)
+        const res = await fetch('http://13.209.90.70/user/login',{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                username : id,
+                password: pw,
+            })
+        })
+        const data = await res;
+        if (data.status === 200) {
+            setLoginSuccess("success");
+            props.onChangeIsAdmin(true);
+            props.onChangeModalOpen(false);
+
+        } else if (data.status === 400) {
+            setLoginSuccess("fail");
+        } else {
+            setLoginSuccess("error");
+        }
     }
  
     return (
@@ -41,25 +57,26 @@ export function LoginModal(props : LoginModalProps) {
                         관리자 로그인
                     </Typography>
                     <TextField 
-                        id="outlined-basic" 
                         error={fieldCheck && !id}
                         value={id} 
                         onChange={idChangeHandler} 
                         label="ID"
+                        InputLabelProps={{ shrink: true }}
                     />
                     <TextField 
-                        id="outlined-basic" 
+                        type="password"
                         error={fieldCheck && !pw}
                         value={pw} 
                         onChange={pwChangeHandler} 
                         label="password"
+                        InputLabelProps={{ shrink: true }}
                     />
                     <Button variant='outlined' onClick={loginButtonClickHandler}>Log in</Button>
                     {loginSuccess === "error" &&
                         <Alert severity="error">로그인 중 에러가 발생했습니다.</Alert>
                     }
                     {loginSuccess === "fail" &&
-                        <Alert severity="warning">아이디 혹은 패스워드가 잘못 되었습니다.</Alert>
+                        <Alert severity="warning">아이디 혹은 패스워드가 잘못되었습니다.</Alert>
                     }
                 </Stack>
             </Box>

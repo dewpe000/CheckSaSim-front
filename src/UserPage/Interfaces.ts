@@ -10,7 +10,6 @@ interface AnswerInfoType {
     answerId : number;
 };
 
-
 interface SurveyInfoType {
     surveyId : number;
     surveyTitle : string;
@@ -26,9 +25,16 @@ interface newSurveyDataType {
     isReverseList : any;
 }
 
+interface SurveyMetaDataType {
+    surveyTitle: string,
+    week: number,
+    surveyId: number,
+}
+
 export type {
     SurveyInfoType,
     AnswerInfoType,
     QuestionInfoType,
-    newSurveyDataType
+    newSurveyDataType,
+    SurveyMetaDataType
 }

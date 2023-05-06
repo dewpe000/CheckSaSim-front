@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Box, Paper, Stack } from '@mui/material';
+import { Box, Stack, Typography, Button } from '@mui/material';
+import { SurveyMetaDataType } from '../Interfaces';
 
 interface MainPageProps {
-    recentSurvey: surveyInfoType[],
+    recentSurvey: SurveyMetaDataType[],
 }
 export function MainPage(props: MainPageProps) {
-    const [recentInfo, setRecentInfo] = useState<surveyInfoType[]>([])
+    const [recentInfo, setRecentInfo] = useState<SurveyMetaDataType[]>([])
     
     useEffect(() => { // 4보다 작을 경우 추가
         let addedInfo = [...props.recentSurvey]
@@ -13,9 +14,9 @@ export function MainPage(props: MainPageProps) {
         if (recentLen < 4) {
             for (let i=0; i < 4 - recentLen; i++) {
                 addedInfo.push({
-                    title: "",
+                    surveyTitle: "",
                     week: 0,
-                    id: 0,
+                    surveyId: 0,
                 })
             }
         }
@@ -27,16 +28,21 @@ export function MainPage(props: MainPageProps) {
         // id 받아서 해당 설문 페이지로 이동
     }
 
-    const drawBoxes = (info: surveyInfoType[]) => (
+    const drawBoxes = (info: SurveyMetaDataType[]) => (
         <Box sx={boxStyle}>
             {info.map(i => 
-                <Paper 
+                <Button 
                     sx={paperStyle} 
-                    key={i.id}
-                >
-                    <Box onClick={() => paperClickHandler(i.id)}>{i.title ? `${i.week}주차` : ''}</Box>
-                    <Box>{i.title}</Box>
-                </Paper>
+                    key={i.surveyId}
+                    variant='outlined'
+                    disabled={!i.surveyTitle}
+                    onClick={() => paperClickHandler(i.surveyId)}
+                >   
+                    <Stack>
+                        <Typography>{i.surveyTitle ? `${i.week}주차` : ""}</Typography>
+                        <Typography>{i.surveyTitle}</Typography>
+                    </Stack>
+                </Button>
             )}
         </Box>
     )
@@ -50,16 +56,11 @@ export function MainPage(props: MainPageProps) {
 }
 const boxStyle = {
     display: 'flex',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
 }
 const paperStyle = {
     textAlign: 'center',
-    padding: '2rem',
     margin: '2rem',
-    width : '50%',
-}
-export interface surveyInfoType {
-    title: string,
-    week: number,
-    id: number,
+    width : '25%',
+    height : '15rem'
 }

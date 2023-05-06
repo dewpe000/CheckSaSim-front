@@ -1,6 +1,6 @@
-
-import { useState, useEffect, ChangeEvent  } from 'react';
-import { Box, Paper, Stack, RadioGroup, Radio, Button } from '@mui/material';
+import { useState, useEffect, ChangeEvent } from 'react';
+import { Box, Paper, Stack, RadioGroup, Radio, 
+    Button, Container, Typography } from '@mui/material';
 import { SurveyInfoType, AnswerInfoType, QuestionInfoType } from '../Interfaces'
 
 interface SurveyProps {
@@ -49,7 +49,6 @@ export function Survey(props : SurveyProps) {
     const changeScore = (event: ChangeEvent<HTMLInputElement>) => {
 
         let hasZero : boolean = false;
-
         surveyData.questionData.forEach(function (quest: QuestionInfoType) {
             if (quest.questId === Number(event.target.name)) {
                 quest.score = Number(event.target.value);
@@ -58,7 +57,7 @@ export function Survey(props : SurveyProps) {
                 hasZero = true;
             }
         })
-
+        
         setIsBtnActive(!hasZero);
     };
 
@@ -81,25 +80,38 @@ export function Survey(props : SurveyProps) {
 
 
     return (
-        <Box>
+        <Container maxWidth="lg" sx={{mt: 3}}>
             <Stack spacing={2}>
                 {/* 설문조사 헤더 */}
                 <Box sx={{display:"flex"}}>
-                    <Paper sx={{ textAlign:"center", width:"60%", height:"2rem"}}>{surveyData.surveyTitle}</Paper>
-                    <Paper sx={{display:"flex", width:"40%", height:"2rem"}}>
-                            {surveyData.answerData.map((ans : AnswerInfoType) => (
-                                <Box sx={{ textAlign:"center", width:100/numAnswer + "%"}}
-                                    key={ans.answerId}>
+                    <Paper sx={{...centerStyle, width:"60%"}}>
+                        <Typography sx={{color: "primary.main"}}>
+                            {surveyData.surveyTitle}
+                        </Typography>
+                    </Paper>
+                    <Paper sx={{...centerStyle, width:"40%"}}>
+                            {surveyData.answerData.map(ans => (
+                                <Box 
+                                    sx={{ 
+                                        textAlign:"center", 
+                                        width: 100/numAnswer + "%", 
+                                        fontSize: "0.9rem",
+                                        color: "primary.main",
+                                    }} 
+                                    key={ans.answerId}
+                                >
                                     {ans.content}
                                 </Box>
                             ))}
                     </Paper>
                 </Box>
                 
-                {surveyData.questionData.map((quest : QuestionInfoType) => (
-                    <Box sx={{display:"flex"}} key={quest.questId}>
-                        <Paper sx={{ textAlign:"center", width:"60%", height:"2rem"}}>{quest.content}</Paper>
-                        <Paper sx={{ width:"40%", height:"2rem"}}>
+                {surveyData.questionData.map(quest => (
+                    <Box sx={{ display:"flex" }} key={quest.questId}>
+                        <Paper sx={{...centerStyle, width:"60%"}}>
+                                {quest.content}
+                        </Paper>
+                        <Paper sx={{ width:"40%", height:"3rem"}}>
                             <RadioGroup row
                                 onChange={changeScore}>
                                 {surveyData.answerData.map((ans : AnswerInfoType) => (
@@ -116,19 +128,27 @@ export function Survey(props : SurveyProps) {
                     </Box>
                 ))}
                 <Button 
-                    variant="outlined" 
-                    sx={ { height:"2rem"}}
+                    variant="outlined"
+                    sx={{width: "70%", alignSelf: "center"}}
                     disabled = {!isBtnActive}
                     onClick={calcTotalScore}>
                     결과 확인
                 </Button>
                 {totalScore !== -1 &&
-                    <Paper sx = {{textAlign:"center"}}>
-                        {totalScore}
-                    </Paper>
+                    <Typography 
+                        sx={{textAlign: "center"}} 
+                        color="primary.main"
+                    >
+                        총점 : {totalScore}
+                    </Typography>
                 }
-                    
             </Stack>
-        </Box>
+        </Container>
     );
+}
+const centerStyle = {
+    display: "flex",
+    justifyContent:'center', 
+    alignItems:"center",
+    height: "3rem",
 }
