@@ -1,17 +1,15 @@
-import { useState } from 'react';
-import { IconButton, List, ListItemText, ListItemButton, 
+import { List, ListItemText, ListItemButton, 
     ListItem, SwipeableDrawer, Box } from '@mui/material';
-import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 
 interface SideBarProps {
     isAdmin : boolean,
+    barOpen: boolean,
     surveyInfo: surveyInfoType[],
+    onChangeBarOpen: (isAdmin: boolean) => void,
 }
-export function SideBar(props : SideBarProps) {
+export function SideBar(props: SideBarProps) {
     const isAdmin = props.isAdmin;
     const surveyInfo = props.surveyInfo;
-
-    const [barOpen, setBarOpen] = useState(true);
 
     const toggleDrawer =
         (open: boolean) =>
@@ -25,7 +23,7 @@ export function SideBar(props : SideBarProps) {
             {
                 return;
             }
-            setBarOpen(open);
+            props.onChangeBarOpen(open);
     };
 
     const list = () => (
@@ -33,8 +31,9 @@ export function SideBar(props : SideBarProps) {
           role="presentation"
           onClick={toggleDrawer(false)}
           onKeyDown={toggleDrawer(false)}
+          sx={{padding : '1rem'}}
         >
-          <List sx={{padding : '1rem'}}>
+          <List>
             {surveyInfo.map((info, index) => (
               <ListItem key={index} disablePadding>
                 <ListItemButton>
@@ -55,14 +54,9 @@ export function SideBar(props : SideBarProps) {
 
     return (
         <div>
-            {!barOpen &&
-                <IconButton onClick={toggleDrawer(true)}>
-                    <MenuOpenIcon/>
-                </IconButton>
-            }
             <SwipeableDrawer
                 anchor="left"
-                open={barOpen}
+                open={props.barOpen}
                 onClose={toggleDrawer(false)}
                 onOpen={toggleDrawer(true)}
             >
@@ -71,8 +65,8 @@ export function SideBar(props : SideBarProps) {
         </div>
     );
 }
-
 export interface surveyInfoType {
     title: string,
     week: number,
+    id: number,
 }
