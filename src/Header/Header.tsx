@@ -4,6 +4,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Typography, Toolbar, Box, AppBar} from '@mui/material';
 
 interface HeaderProps {
+    isAdmin: boolean,
     onChangeBarOpen: (isAdmin: boolean) => void,
     onChangeModalOpen: (open: boolean) => void,
 }
@@ -22,15 +23,18 @@ export function Header(props: HeaderProps) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        건강과 사회 그리고 심리학 자기 평가
+                        건강과 사회 그리고 심리학
                     </Typography>
-                    <IconButton
-                        size="large"   
-                        color="inherit"
-                        onClick={() => props.onChangeModalOpen(true)}
-                    >
-                        <AccountCircleIcon/>
-                    </IconButton>
+                    {props.isAdmin ? 
+                        <Typography>관리자</Typography>
+                        : <IconButton
+                            size="large"   
+                            color="inherit"
+                            onClick={() => props.onChangeModalOpen(true)}
+                        >
+                            <AccountCircleIcon/>
+                        </IconButton>
+                    }
                     </Toolbar>
                 </AppBar>
             </Box>

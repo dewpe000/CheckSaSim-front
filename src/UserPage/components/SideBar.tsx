@@ -1,10 +1,11 @@
 import { List, ListItemText, ListItemButton, 
     ListItem, SwipeableDrawer, Box } from '@mui/material';
+import { SurveyMetaDataType } from '../Interfaces';
 
 interface SideBarProps {
     isAdmin : boolean,
     barOpen: boolean,
-    surveyInfo: surveyInfoType[],
+    surveyInfo: SurveyMetaDataType[],
     onChangeBarOpen: (isAdmin: boolean) => void,
 }
 export function SideBar(props: SideBarProps) {
@@ -25,7 +26,10 @@ export function SideBar(props: SideBarProps) {
             }
             props.onChangeBarOpen(open);
     };
-
+    const listItemClickHandler = (id: number) => {
+        console.log(id)
+        // survey 이동
+    }
     const list = () => (
         <Box
           role="presentation"
@@ -34,17 +38,17 @@ export function SideBar(props: SideBarProps) {
           sx={{padding : '1rem'}}
         >
           <List>
-            {surveyInfo.map((info, index) => (
-              <ListItem key={index} disablePadding>
+            {surveyInfo.map((info) => (
+              <ListItem key={info.surveyId} disablePadding onClick={() => listItemClickHandler(info.surveyId)}>
                 <ListItemButton>
-                  <ListItemText primary={`${info.week}주차 - ${info.title}`}/>
+                  <ListItemText primary={`${info.week}주차 - ${info.surveyTitle}`}/>
                 </ListItemButton>
               </ListItem>
             ))}
             {isAdmin && 
                 <ListItem disablePadding>
                     <ListItemButton>
-                        <ListItemText primary="설문 추가하기" />
+                        <ListItemText primary="설문 추가하기" sx={{textAlign: "center"}}/>
                     </ListItemButton>
                 </ListItem>
             }
@@ -53,20 +57,13 @@ export function SideBar(props: SideBarProps) {
     );
 
     return (
-        <div>
-            <SwipeableDrawer
-                anchor="left"
-                open={props.barOpen}
-                onClose={toggleDrawer(false)}
-                onOpen={toggleDrawer(true)}
-            >
-                {list()}
-            </SwipeableDrawer>
-        </div>
+        <SwipeableDrawer
+            anchor="left"
+            open={props.barOpen}
+            onClose={toggleDrawer(false)}
+            onOpen={toggleDrawer(true)}
+        >
+            {list()}
+        </SwipeableDrawer>
     );
-}
-export interface surveyInfoType {
-    title: string,
-    week: number,
-    id: number,
 }

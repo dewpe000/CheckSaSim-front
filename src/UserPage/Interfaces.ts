@@ -10,7 +10,6 @@ interface AnswerInfoType {
     answerId : number;
 };
 
-
 interface SurveyInfoType {
     surveyId : number;
     surveyTitle : string;
@@ -18,8 +17,15 @@ interface SurveyInfoType {
     answerData : AnswerInfoType[];
 };
 
+interface SurveyMetaDataType {
+    surveyTitle: string,
+    week: number,
+    surveyId: number,
+}
+
 export type {
     SurveyInfoType,
     AnswerInfoType,
-    QuestionInfoType
+    QuestionInfoType,
+    SurveyMetaDataType
 }
