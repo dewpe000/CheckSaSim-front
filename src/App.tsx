@@ -5,6 +5,8 @@ import { Header } from './Header/Header';
 import { MainPage } from './UserPage/components/MainPage';
 import { SideBar, surveyInfoType } from './UserPage/components/SideBar';
 import { globalTheme } from './theme';
+import { Survey } from './UserPage/components/Survey';
+import { AddSurvey } from './AdminPage/components/AddSurvey';
 
 function App() {
   const surveyData: surveyInfoType[] = [
@@ -40,7 +42,8 @@ function App() {
 
   return (
     <ThemeProvider theme={globalTheme}>
-      {modalOpen &&
+      <AddSurvey></AddSurvey>
+      {/* {modalOpen &&
         <LoginModal 
           modalOpen={modalOpen} 
           onChangeIsAdmin={changeIsAdmin} 
@@ -57,7 +60,7 @@ function App() {
         onChangeBarOpen={changeBarOpen} 
         barOpen={barOpen} 
       />
-      <MainPage recentSurvey={surveyData}/>
+      <MainPage recentSurvey={surveyData}/> */}
     </ThemeProvider>
   );
 }

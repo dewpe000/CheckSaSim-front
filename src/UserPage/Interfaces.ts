@@ -18,8 +18,17 @@ interface SurveyInfoType {
     answerData : AnswerInfoType[];
 };
 
+interface newSurveyDataType {
+    weekNum : number;
+    surveyTitle : string;
+    answerList : any;
+    questList : any;
+    isReverseList : any;
+}
+
 export type {
     SurveyInfoType,
     AnswerInfoType,
-    QuestionInfoType
+    QuestionInfoType,
+    newSurveyDataType
 }
