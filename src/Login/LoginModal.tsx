@@ -31,7 +31,7 @@ export function LoginModal(props : LoginModalProps) {
         }
         setCircularBar(true)
         await sleep(1000);
-        const res = await fetch('http://13.209.90.70:80/user/login',{
+        const res = await fetch('https://sasim.heegh.store/login',{
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
