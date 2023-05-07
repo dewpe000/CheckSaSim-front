@@ -1,49 +1,52 @@
 import { useState, useEffect, ChangeEvent } from 'react';
+import { useParams, useNavigate } from "react-router"
 import { Box, Paper, Stack, RadioGroup, Radio, 
     Button, Container, Typography } from '@mui/material';
 import { SurveyInfoType, AnswerInfoType, QuestionInfoType } from '../Interfaces'
 
 interface SurveyProps {
-    surveyId : number;
+    isAdmin: boolean,
+    getDataAfterDel: () => Promise<void>,
 };
-
 export function Survey(props : SurveyProps) {
+    const { id } = useParams();
+    const navigate = useNavigate();
+    
+    const getSurvey = async () => {
+        const res = await fetch(`http://13.209.90.70:80/survey/${id}`, {
+            method: "GET",
+        })
+        const data = await res.json();
+        const initialSurveyData = {
+            surveyId: data.results.id,
+            surveyTitle: data.results.title,
+            questionData: data.results.questions.map((ques: any, idx: number) => (
+                {
+                    content: ques.body,
+                    questId: ques.id,
+                    score: 0,
+                    isReverse: ques.is_reverse,
+                }
+            )),
+            answerData: data.results.answers.map((ans: any, idx: number) => (
+                {
+                    content: ans,
+                    answerId: idx+1,
+                }
+            ))
+        }
+        console.log(initialSurveyData)
+        setSurveyData(initialSurveyData)
+    }
 
-    let [surveyId, setSurveyId] = useState(props.surveyId);
-
-    //TODO : surveyId로 HTTP
-    useEffect(()=> {
-        console.log("SDASDASDASDAS")
-    }, []);
-
-    fetch("http://13.209.90.70:80/survey/" + surveyId)
-        .then(res => res.json())
-        .then(json => console.log(json));
-    // let fetchingData : SurveyInfoType = [];
-
-
+    useEffect(() => {
+        getSurvey();
+    }, [id])
 
     let [isBtnActive, setIsBtnActive] = useState(false);
     let [totalScore, setTotalScore] = useState(-1);
-    let [surveyData, setSurveyData] = useState({
-        surveyId : 1,
-        surveyTitle : "2주차 ~~~~검사하기",
-        questionData : [ 
-            { content: "AAAAAAAAAAAAAAAA", questId : 1, score : 0, isReverse : false},
-            { content: "VVVVVVVVVVVVVVVV", questId : 2, score : 0, isReverse : false},
-            { content: "CCCCCCCCCCCCCCCCCCCCCC", questId : 3, score : 0, isReverse : false},
-            { content: "DDDDDDDDDDDDD", questId : 4, score : 0, isReverse : false},
-        ],
-        answerData : [
-            { content: "매우 아니다", answerId : 1 },
-            { content: "아니다", answerId : 2 },
-            { content: "보통이다", answerId : 3 },
-            { content: "그렇다", answerId : 4 },
-            { content: "매우 그렇다", answerId : 5 }
-        ]
-    });
+    let [surveyData, setSurveyData] = useState({} as SurveyInfoType);
 
-    let numAnswer : number = surveyData.answerData.length;
 
     // 체크 박스 변경시 이벤트
     const changeScore = (event: ChangeEvent<HTMLInputElement>) => {
@@ -68,7 +71,7 @@ export function Survey(props : SurveyProps) {
 
         surveyData.questionData.forEach((quest : QuestionInfoType) => {
             if(quest.isReverse) {
-                sum += numAnswer - quest.score + 1;
+                sum += (surveyData.answerData.length) - quest.score + 1;
             }
             else {
                 sum += quest.score;
@@ -77,6 +80,14 @@ export function Survey(props : SurveyProps) {
 
         setTotalScore(sum);
     };
+
+    const deleteButtonClickHandler = async () => {
+        await fetch(`http://13.209.90.70:80/survey/${id}`, {
+            method: 'DELETE',
+        })
+        props.getDataAfterDel();
+        navigate('/');
+    }
 
 
     return (
@@ -90,11 +101,11 @@ export function Survey(props : SurveyProps) {
                         </Typography>
                     </Paper>
                     <Paper sx={{...centerStyle, width:"40%"}}>
-                            {surveyData.answerData.map(ans => (
+                            {surveyData.answerData?.map(ans => (
                                 <Box 
                                     sx={{ 
                                         textAlign:"center", 
-                                        width: 100/numAnswer + "%", 
+                                        width: 100/(surveyData.answerData.length) + "%", 
                                         fontSize: "0.9rem",
                                         color: "primary.main",
                                     }} 
@@ -106,7 +117,7 @@ export function Survey(props : SurveyProps) {
                     </Paper>
                 </Box>
                 
-                {surveyData.questionData.map(quest => (
+                {surveyData.questionData?.map((quest: QuestionInfoType) => (
                     <Box sx={{ display:"flex" }} key={quest.questId}>
                         <Paper sx={{...centerStyle, width:"60%"}}>
                                 {quest.content}
@@ -114,8 +125,8 @@ export function Survey(props : SurveyProps) {
                         <Paper sx={{ width:"40%", height:"3rem"}}>
                             <RadioGroup row
                                 onChange={changeScore}>
-                                {surveyData.answerData.map((ans : AnswerInfoType) => (
-                                    <Box sx={{textAlign:"center", width:100/numAnswer + "%"}}
+                                {surveyData.answerData?.map((ans : AnswerInfoType) => (
+                                    <Box sx={{textAlign:"center", width:100/(surveyData.answerData.length) + "%"}}
                                         key={quest.questId* 1000 + ans.answerId}>
                                         <Radio
                                             value={ans.answerId}
@@ -141,6 +152,14 @@ export function Survey(props : SurveyProps) {
                     >
                         총점 : {totalScore}
                     </Typography>
+                }
+                {props.isAdmin &&
+                    <Button 
+                        variant="outlined"
+                        sx={{width: "70%", alignSelf: "center", color: "gray"}}
+                        onClick={deleteButtonClickHandler}>
+                        설문지 삭제하기
+                    </Button>
                 }
             </Stack>
         </Container>

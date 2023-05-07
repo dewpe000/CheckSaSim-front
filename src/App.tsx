@@ -1,16 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import { ThemeProvider } from '@mui/material/styles';
 import { LoginModal } from './Login/LoginModal';
 import { Header } from './Header/Header';
-import { MainPage } from './UserPage/components/MainPage';
-import { SideBar } from './UserPage/components/SideBar';
 import { SurveyMetaDataType } from './UserPage/Interfaces';
+import { MainPage, SideBar, Survey } from './UserPage';
 import { globalTheme } from './theme';
-import { Survey } from './UserPage/components/Survey';
 import { AddSurvey } from './AdminPage/components/AddSurvey';
 
 function App() {
-  const surveyData: SurveyMetaDataType[] = [
+  const [surveyData, setSurveyData]  = useState([
     {
       surveyTitle: "MBTI 검사1",
       week: 1,
@@ -26,16 +25,37 @@ function App() {
       week: 3,
       surveyId: 3,
     },
-  ]
+  ])
+  const getRecentData = async () => {
+    const res = await fetch('http://13.209.90.70:80/survey', {
+      method: "GET"
+    })
+    const data = await res.json()
+    const recentData: SurveyMetaDataType[] = data.results.map((res: any) => (
+      {
+        surveyTitle: res.title,
+        week: res.week_num,
+        surveyId: res.id,
+      }
+    ))
+    setSurveyData(recentData)
+  }
+  
+  useEffect(() => {
+    getRecentData();
+  }, [])
+
   const [barOpen, setBarOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  // const [isAdmin, setIsAdmin] = useState(false);
+  const isAdmin = useRef<boolean>(false)
   const [modalOpen, setModalOpen] = useState(false);
 
   const changeBarOpen = (open: boolean) => {
     setBarOpen(open);
   }
-  const changeIsAdmin = (isAdmin: boolean) => {
-    setIsAdmin(isAdmin);
+  const changeIsAdmin = (admin: boolean) => {
+    // setIsAdmin(isAdmin);
+    isAdmin.current = admin;
   }
   const changeModalOpen = (open: boolean) => {
     setModalOpen(open);
@@ -43,26 +63,31 @@ function App() {
 
   return (
     <ThemeProvider theme={globalTheme}>
-      <AddSurvey></AddSurvey>
-      {/* {modalOpen &&
-        <LoginModal 
-          modalOpen={modalOpen} 
-          onChangeIsAdmin={changeIsAdmin} 
-          onChangeModalOpen={changeModalOpen}
+      <Router>
+        {modalOpen &&
+          <LoginModal 
+            modalOpen={modalOpen} 
+            onChangeIsAdmin={changeIsAdmin} 
+            onChangeModalOpen={changeModalOpen}
+          />
+        }
+        <Header 
+          isAdmin={isAdmin.current}
+          onChangeBarOpen={changeBarOpen} 
+          onChangeModalOpen={changeModalOpen} 
         />
-      }
-      <Header 
-        isAdmin={isAdmin}
-        onChangeBarOpen={changeBarOpen} 
-        onChangeModalOpen={changeModalOpen} 
-      />
-      <SideBar 
-        isAdmin={isAdmin} 
-        surveyInfo={surveyData} 
-        onChangeBarOpen={changeBarOpen} 
-        barOpen={barOpen} 
-      />
-      <MainPage recentSurvey={surveyData}/> */}
+        <SideBar 
+          isAdmin={isAdmin.current} 
+          surveyInfo={surveyData} 
+          onChangeBarOpen={changeBarOpen} 
+          barOpen={barOpen} 
+        />
+        <Routes>
+          <Route path="/survey/:id" element={<Survey isAdmin={isAdmin.current} getDataAfterDel={getRecentData}/>}></Route>
+          <Route path="/" element={<MainPage recentSurvey={surveyData}/>}></Route>
+          <Route path="/add" element={<AddSurvey />}></Route>
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }

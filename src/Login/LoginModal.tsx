@@ -25,7 +25,7 @@ export function LoginModal(props : LoginModalProps) {
             setFieldCheck(true);
             return;
         }
-        const res = await fetch('http://13.209.90.70/user/login',{
+        const res = await fetch('http://13.209.90.70:80/user/login',{
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
