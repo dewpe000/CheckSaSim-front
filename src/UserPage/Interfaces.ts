@@ -17,12 +17,23 @@ interface SurveyInfoType {
     answerData : AnswerInfoType[];
 };
 
-interface newSurveyDataType {
-    weekNum : number;
+interface NewSurveyDataType {
     surveyTitle : string;
     answerList : any;
     questList : any;
-    isReverseList : any;
+    isReverseList : (boolean | string)[];
+}
+
+interface SurveyPostReqType {
+    title : string;
+    week_num : string;
+    type : string;
+    answers : string[];
+    questions : {
+        body : string;
+        is_reverse : boolean;
+        type : string;
+    }[];
 }
 
 interface SurveyMetaDataType {
@@ -35,6 +46,7 @@ export type {
     SurveyInfoType,
     AnswerInfoType,
     QuestionInfoType,
-    newSurveyDataType,
+    NewSurveyDataType,
+    SurveyPostReqType,
     SurveyMetaDataType
 }
