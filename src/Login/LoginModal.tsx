@@ -1,5 +1,5 @@
 import { useState, ChangeEvent } from 'react';
-import { Box, Typography, Modal, InputLabel,
+import { Box, Typography, Modal,
     Button, TextField, Alert, Stack } from '@mui/material';
 
 interface LoginModalProps {

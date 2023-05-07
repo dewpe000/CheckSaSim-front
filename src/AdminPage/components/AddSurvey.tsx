@@ -142,7 +142,7 @@ export function AddSurvey() {
                 return;
             }
 
-            if(outputData.isReverseList[i] == "on") {
+            if(outputData.isReverseList[i] === "on") {
                 outputData.isReverseList[i] = true;
             } 
             else {
@@ -206,7 +206,7 @@ export function AddSurvey() {
                         ))}
                     </Select>
                 </Stack>
-                {numOfAnswer != 0 && getAnswerList(numOfAnswer)}
+                {numOfAnswer !== 0 && getAnswerList(numOfAnswer)}
                 <Box sx={{border:"solid 0.1px #ced4da", width:"70%"}}/>
                 <Stack sx={{width:stackItemSize + "%"}}>
                     <InputLabel shrink sx={{fontSize:"25px"}}>
@@ -221,7 +221,7 @@ export function AddSurvey() {
                         ))}
                     </Select>
                 </Stack>
-                {numOfQuest != 0 && getQuestList(numOfQuest)}
+                {numOfQuest !== 0 && getQuestList(numOfQuest)}
                 <Box sx={{border:"solid 0.1px #ced4da", width:"70%"}}/>
                 <Button
                     variant="outlined"
