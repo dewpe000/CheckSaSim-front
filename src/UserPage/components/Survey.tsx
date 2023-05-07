@@ -20,6 +20,7 @@ export function Survey(props : SurveyProps) {
         const initialSurveyData = {
             surveyId: data.results.id,
             surveyTitle: data.results.title,
+            surveyType : data.results.type,
             questionData: data.results.questions.map((ques: any, idx: number) => (
                 {
                     content: ques.body,
@@ -35,6 +36,18 @@ export function Survey(props : SurveyProps) {
                 }
             ))
         }
+        initialSurveyData.questionData.sort((q1 : QuestionInfoType, q2: QuestionInfoType) => {
+            if(q1.questId > q2.questId) {
+                return 1;
+            }
+            if(q1.questId === q2.questId) {
+                return 0;
+            }
+            if(q1.questId < q2.questId) {
+                return -1;
+            }
+        })
+
         setSurveyData(initialSurveyData)
     }
 
@@ -65,19 +78,31 @@ export function Survey(props : SurveyProps) {
 
     //최종 점수 계산
     const calcTotalScore = () => {
-        let sum = 0;
-        console.log(surveyData.questionData)
 
-        surveyData.questionData.forEach((quest : QuestionInfoType) => {
-            if(quest.isReverse) {
-                sum += (surveyData.answerData.length) - quest.score + 1;
-            }
-            else {
-                sum += quest.score;
-            }
-        })
+        if(surveyData.surveyType == 'SCORE') {
+            let sum = 0;
+    
+            surveyData.questionData.forEach((quest : QuestionInfoType) => {
+                if(quest.isReverse) {
+                    sum += (surveyData.answerData.length) - quest.score + 1;
+                }
+                else {
+                    sum += quest.score;
+                }
+            })
+    
+            setTotalScore(sum);
+        }
+        else {
+            let numOfYes = 0;
+            surveyData.questionData.forEach((quest : QuestionInfoType) => {
+                if(quest.score == 1) {
+                    numOfYes += 1;
+                }
+            })
+            setTotalScore(numOfYes);
+        }
 
-        setTotalScore(sum);
     };
 
     const deleteButtonClickHandler = async () => {
@@ -152,8 +177,10 @@ export function Survey(props : SurveyProps) {
                         <Typography 
                             sx={{textAlign: "center"}} 
                             color="primary.main"
-                        >
-                            총점 : {totalScore}
+                        >   { surveyData.surveyType === 'SCORE' ?
+                                <>총점 : + {totalScore}</> : 
+                                <>예 : {totalScore}   아니요 : {surveyData.questionData.length - totalScore}</>
+                            }
                         </Typography>
                     }
                     {props.isAdmin &&
