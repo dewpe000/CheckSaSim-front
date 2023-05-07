@@ -2,6 +2,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Typography, Toolbar, Box} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
     isAdmin: boolean,
@@ -9,19 +10,30 @@ interface HeaderProps {
     onChangeModalOpen: (open: boolean) => void,
 }
 export function Header(props: HeaderProps) {
+    const navigate = useNavigate();
+    const moveToMainPage = () => {
+        navigate('/')
+    }
+
     return (
         <div className="App">
-             <Box sx={{ flexGrow: 1,mt:1 }}>
+             <Box sx={{ flexGrow: 1, mt: 1 }}>
                     <Toolbar>
                     <IconButton
                         size="large"      
                         color="primary"
                         onClick={() => props.onChangeBarOpen(true)}
-                        sx={{ mr: 2}}
+                        sx={{ mr: 2 }}
                         >
-                        <MenuIcon sx= {{fontSize:"2.5rem"}}/>
+                        <MenuIcon sx= {{fontSize: "2.5rem"}}/>
                     </IconButton>
-                    <Typography variant="h4" component="div" sx={{ flexGrow: 1, textAlign:"center"}} color="primary.main">
+                    <Typography 
+                        variant="h4" 
+                        component="div" 
+                        sx={{ flexGrow: 1, textAlign:"center", cursor: "pointer", mt: 2}} 
+                        color="primary.main"
+                        onClick={moveToMainPage}
+                    >
                         건강과 사회 그리고 심리학
                     </Typography>
                     {props.isAdmin ? 
@@ -31,7 +43,7 @@ export function Header(props: HeaderProps) {
                             color="primary"
                             onClick={() => props.onChangeModalOpen(true)}
                         >
-                            <AccountCircleIcon sx= {{fontSize:"2.5rem"}}/>
+                            <AccountCircleIcon sx= {{fontSize: "2.5rem"}}/>
                         </IconButton>
                     }
                     </Toolbar>

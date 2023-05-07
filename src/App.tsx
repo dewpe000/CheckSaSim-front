@@ -4,7 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { LoginModal } from './Login/LoginModal';
 import { Header } from './Header/Header';
 import { SurveyMetaDataType } from './UserPage/Interfaces';
-import { MainPage, SideBar, Survey } from './UserPage';
+import { MainPage, SideBar, Survey, Footer } from './UserPage';
 import { globalTheme } from './theme';
 import { AddSurvey } from './AdminPage/components/AddSurvey';
 import './App.css';
@@ -45,33 +45,36 @@ function App() {
   }
 
   return (
-    <ThemeProvider theme={globalTheme}>
-      <Router>
-        {modalOpen &&
-          <LoginModal 
-            modalOpen={modalOpen} 
-            onChangeIsAdmin={changeIsAdmin} 
-            onChangeModalOpen={changeModalOpen}
+    <div className="body">
+      <ThemeProvider theme={globalTheme}>
+        <Router>
+          {modalOpen &&
+            <LoginModal 
+              modalOpen={modalOpen} 
+              onChangeIsAdmin={changeIsAdmin} 
+              onChangeModalOpen={changeModalOpen}
+            />
+          }
+          <Header 
+            isAdmin={isAdmin.current}
+            onChangeBarOpen={changeBarOpen} 
+            onChangeModalOpen={changeModalOpen} 
           />
-        }
-        <Header 
-          isAdmin={isAdmin.current}
-          onChangeBarOpen={changeBarOpen} 
-          onChangeModalOpen={changeModalOpen} 
-        />
-        <SideBar 
-          isAdmin={isAdmin.current} 
-          surveyInfo={surveyData} 
-          onChangeBarOpen={changeBarOpen} 
-          barOpen={barOpen} 
-        />
-        <Routes>
-          <Route path="/survey/:id" element={<Survey isAdmin={isAdmin.current} getDataAfterDel={getRecentData}/>}></Route>
-          <Route path="/" element={<MainPage recentSurvey={surveyData}/>}></Route>
-          <Route path="/add" element={<AddSurvey getDataAfterAdd={getRecentData} />}></Route>
-        </Routes>
-      </Router>
-    </ThemeProvider>
+          <SideBar 
+            isAdmin={isAdmin.current} 
+            surveyInfo={surveyData} 
+            onChangeBarOpen={changeBarOpen} 
+            barOpen={barOpen} 
+          />
+          <Routes>
+            <Route path="/survey/:id" element={<Survey isAdmin={isAdmin.current} getDataAfterDel={getRecentData}/>}></Route>
+            <Route path="/" element={<MainPage recentSurvey={surveyData}/>}></Route>
+            <Route path="/add" element={<AddSurvey getDataAfterAdd={getRecentData} />}></Route>
+          </Routes>
+        </Router>
+        <div className='footer'><Footer/></div>
+      </ThemeProvider>
+    </div>
   );
 }
 
