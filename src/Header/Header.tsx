@@ -17,9 +17,9 @@ export function Header(props: HeaderProps) {
                         size="large"      
                         color="primary"
                         onClick={() => props.onChangeBarOpen(true)}
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
+                        sx={{ mr: 2}}
+                        >
+                        <MenuIcon sx= {{fontSize:"2.5rem"}}/>
                     </IconButton>
                     <Typography variant="h4" component="div" sx={{ flexGrow: 1, textAlign:"center"}} color="primary.main">
                         건강과 사회 그리고 심리학
@@ -31,7 +31,7 @@ export function Header(props: HeaderProps) {
                             color="primary"
                             onClick={() => props.onChangeModalOpen(true)}
                         >
-                            <AccountCircleIcon/>
+                            <AccountCircleIcon sx= {{fontSize:"2.5rem"}}/>
                         </IconButton>
                     }
                     </Toolbar>
