@@ -201,15 +201,15 @@ export function AddSurvey(props: AddSurveyProps) {
                     </Select>
                 </Stack>
                 <Stack sx={{width:stackItemSize + "%"}}>
-                    {renderInputLabel("검사 제목")}
-                    <TextField placeholder='검사 제목을 입력해주세요' 
+                    {renderInputLabel("자기평가 제목")}
+                    <TextField placeholder='자기평가 제목을 입력해주세요' 
                         onChange={changeSurveyTitle}
                         error={isSubmitBtnClicked && surveyTitle === ''}
                     >  
                     </TextField>
                 </Stack>
                 <Stack sx={{width:stackItemSize + "%"}}>
-                    {renderInputLabel("검사 종류")}
+                    {renderInputLabel("채점 종류")}
                         <Select onChange={changeSurveyType}
                             defaultValue='SCORE'
                             >
