@@ -50,8 +50,8 @@ export function MainPage(props: MainPageProps) {
 
     return (
         <Stack spacing={2}>
-            {drawBoxes(recentInfo.slice(0, 2))}
-            {drawBoxes(recentInfo.slice(2, 4))}
+            {drawBoxes([...recentInfo].reverse().slice(0, 2))}
+            {drawBoxes([...recentInfo].reverse().slice(2, 4))}
         </Stack>
     );
 }
