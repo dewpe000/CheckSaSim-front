@@ -9,23 +9,7 @@ import { globalTheme } from './theme';
 import { AddSurvey } from './AdminPage/components/AddSurvey';
 
 function App() {
-  const [surveyData, setSurveyData]  = useState([
-    {
-      surveyTitle: "MBTI 검사1",
-      week: 1,
-      surveyId: 1,
-    },
-    {
-      surveyTitle: "MBTI 검사2",
-      week: 2,
-      surveyId: 2,
-    },
-    {
-      surveyTitle: "MBTI 검사3",
-      week: 3,
-      surveyId: 3,
-    },
-  ])
+  const [surveyData, setSurveyData]  = useState<SurveyMetaDataType[]>([])
   const getRecentData = async () => {
     const res = await fetch('http://13.209.90.70:80/survey', {
       method: "GET"

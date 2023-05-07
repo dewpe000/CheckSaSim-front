@@ -18,7 +18,7 @@ export function MainPage(props: MainPageProps) {
                 addedInfo.push({
                     surveyTitle: "",
                     week: 0,
-                    surveyId: 0,
+                    surveyId: i,
                 })
             }
         }
