@@ -35,7 +35,6 @@ export function Survey(props : SurveyProps) {
                 }
             ))
         }
-        console.log(initialSurveyData)
         setSurveyData(initialSurveyData)
     }
 
@@ -91,7 +90,7 @@ export function Survey(props : SurveyProps) {
 
 
     return (
-        <Container maxWidth="lg" sx={{mt: 3}}>
+        <Container maxWidth="lg" sx={{mt: 3, mb: 3}}>
             <Stack spacing={2}>
                 {/* 설문조사 헤더 */}
                 <Box sx={{display:"flex"}}>
