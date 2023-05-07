@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import { Box, Stack, Typography, Button } from '@mui/material';
 import { SurveyMetaDataType } from '../Interfaces';
 
@@ -7,6 +8,7 @@ interface MainPageProps {
 }
 export function MainPage(props: MainPageProps) {
     const [recentInfo, setRecentInfo] = useState<SurveyMetaDataType[]>([])
+    const navigate = useNavigate();
     
     useEffect(() => { // 4보다 작을 경우 추가
         let addedInfo = [...props.recentSurvey]
@@ -24,8 +26,7 @@ export function MainPage(props: MainPageProps) {
     }, [props.recentSurvey])
 
     const paperClickHandler = (id: number) => {
-        console.log(id)
-        // id 받아서 해당 설문 페이지로 이동
+        navigate(`/survey/${id}`)
     }
 
     const drawBoxes = (info: SurveyMetaDataType[]) => (
