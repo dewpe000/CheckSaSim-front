@@ -4,3 +4,11 @@
     font-weight: 100;
     src: url("./NanumBarunGothic.woff") format("woff");
 }
+.body{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.footer{
+    margin-top: auto;
+}

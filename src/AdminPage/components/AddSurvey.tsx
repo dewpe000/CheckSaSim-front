@@ -1,5 +1,5 @@
 import { Container, Stack, Select, SelectChangeEvent, MenuItem, 
-    InputLabel, TextField, Checkbox, Box, Button, Zoom} from '@mui/material';
+    InputLabel, TextField, Checkbox, Box, Button, Zoom, Typography} from '@mui/material';
 import { useState, ChangeEvent } from 'react';
 import { useNavigate } from "react-router"
 import { NewSurveyDataType, SurveyPostReqType } from '../../UserPage/Interfaces';
@@ -33,10 +33,8 @@ export function AddSurvey(props: AddSurveyProps) {
             answerList.push(           
                 <Zoom in={true} key={i}>
                     <Stack sx={{width:stackItemSize + "%"}}>
-                        <InputLabel shrink sx={{ fontSize: "25px"}}>
-                            답변 {i}
-                        </InputLabel>
-                        <TextField placeholder='검사 제목을 입력해주세요' 
+                        {renderInputLabel(`답변 ${i}`)}
+                        <TextField placeholder='답변을 입력해주세요' 
                             error={isSubmitBtnClicked && !outputData.answerList[i - 1]}
                             onChange={(e) => changeAnswerContent(e, i-1)}/>
                     </Stack>
@@ -52,14 +50,12 @@ export function AddSurvey(props: AddSurveyProps) {
             questList.push(          
                 <Zoom in={true} key={i}>  
                     <Stack sx={{width:stackItemSize + "%"}} key={i}>
-                        <Box sx={{display:"flex", alignItems:"end"}}>
-                            <InputLabel shrink sx={{ fontSize: "25px"}}>
-                                질문 {i}
-                            </InputLabel>
+                        <Box sx={{display:"flex"}}>
+                            {renderInputLabel(`질문 ${i}`)}
                             <Checkbox onChange={(e) => changeIsReverse(e, i - 1)}/>
                         </Box>
                             <TextField sx={{ size: 'medium' }}
-                                placeholder='검사 제목을 입력해주세요'
+                                placeholder='질문을 입력해주세요'
                                 error={isSubmitBtnClicked && !outputData.questList[i - 1]}
                                 onChange={(e) => changeQuestContent(e, i - 1)} />
                     </Stack>
@@ -68,6 +64,16 @@ export function AddSurvey(props: AddSurveyProps) {
         }
         return questList;
     }
+
+    const renderDivider = () => (
+        <Box sx={{border:"solid 0.1rem", width:"60%", color: "primary.main"}}/>
+    )
+
+    const renderInputLabel = (label: string) => (
+        <Typography sx={{ margin: "revert", fontSize: '1rem'}}>
+            {label}
+        </Typography>
+    )
 
     const changeWeekNum = (event: SelectChangeEvent) => {
         setWeekNum(Number(event.target.value));
@@ -176,9 +182,7 @@ export function AddSurvey(props: AddSurveyProps) {
         <Container maxWidth="lg" sx={{mt: 3, mb: 3}}>
             <Stack spacing={3} alignItems="center">
                 <Stack sx={{width:stackItemSize + "%"}}>
-                    <InputLabel shrink sx={{fontSize:"25px"}}>
-                        주차
-                    </InputLabel>
+                    {renderInputLabel("주차")}
                     <Select onChange={changeWeekNum}
                         value={weekNum >= 2 ? String(weekNum) : ''}
                         error={isSubmitBtnClicked && weekNum === 0}
@@ -190,20 +194,16 @@ export function AddSurvey(props: AddSurveyProps) {
                     </Select>
                 </Stack>
                 <Stack sx={{width:stackItemSize + "%"}}>
-                    <InputLabel shrink sx={{fontSize:"25px"}}>
-                        검사 제목
-                    </InputLabel>
+                    {renderInputLabel("검사 제목")}
                     <TextField placeholder='검사 제목을 입력해주세요' 
                         onChange={changeSurveyTitle}
                         error={isSubmitBtnClicked && outputData.surveyTitle === ''}
                     >  
                     </TextField>
                 </Stack>
-                <Box sx={{border:"solid 0.1px #ced4da", width:"70%"}}/>
+                {renderDivider()}
                 <Stack sx={{width:stackItemSize + "%"}}>
-                    <InputLabel shrink sx={{fontSize:"25px"}}>
-                        답변 수
-                    </InputLabel>
+                    {renderInputLabel("답변 수")}
                     <Select onChange={changeNumOfAnswer}
                         value={numOfAnswer >= 2 ? String(numOfAnswer) : ''}
                         error={isSubmitBtnClicked && numOfAnswer < 2}
@@ -214,11 +214,9 @@ export function AddSurvey(props: AddSurveyProps) {
                     </Select>
                 </Stack>
                 {numOfAnswer !== 0 && getAnswerList(numOfAnswer)}
-                <Box sx={{border:"solid 0.1px #ced4da", width:"70%"}}/>
+                {renderDivider()}
                 <Stack sx={{width:stackItemSize + "%"}}>
-                    <InputLabel shrink sx={{fontSize:"25px"}}>
-                        질문 수
-                    </InputLabel>
+                    {renderInputLabel("질문 수")}
                     <Select onChange={changeNumOfQuest}
                         value={numOfQuest >= 2 ? String(numOfQuest) : ''}
                         error={isSubmitBtnClicked && numOfQuest < 2}
@@ -229,7 +227,7 @@ export function AddSurvey(props: AddSurveyProps) {
                     </Select>
                 </Stack>
                 {numOfQuest !== 0 && getQuestList(numOfQuest)}
-                <Box sx={{border:"solid 0.1px #ced4da", width:"70%"}}/>
+               {renderDivider()}
                 <Button
                     variant="outlined"
                     sx={{ width: "50%", height: "4rem" }}

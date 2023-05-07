@@ -1,7 +1,7 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { useParams, useNavigate } from "react-router"
 import { Box, Paper, Stack, RadioGroup, Radio, 
-    Button, Container, Typography } from '@mui/material';
+    Button, Container, Typography, CircularProgress } from '@mui/material';
 import { SurveyInfoType, AnswerInfoType, QuestionInfoType } from '../Interfaces'
 
 interface SurveyProps {
@@ -91,76 +91,81 @@ export function Survey(props : SurveyProps) {
 
     return (
         <Container maxWidth="lg" sx={{mt: 3, mb: 3}}>
-            <Stack spacing={2}>
-                {/* 설문조사 헤더 */}
-                <Box sx={{display:"flex"}}>
-                    <Paper sx={{...centerStyle, width:"60%"}}>
-                        <Typography sx={{color: "primary.main"}}>
-                            {surveyData.surveyTitle}
-                        </Typography>
-                    </Paper>
-                    <Paper sx={{...centerStyle, width:"40%"}}>
-                            {surveyData.answerData?.map(ans => (
-                                <Box 
-                                    sx={{ 
-                                        textAlign:"center", 
-                                        width: 100/(surveyData.answerData.length) + "%", 
-                                        fontSize: "0.9rem",
-                                        color: "primary.main",
-                                    }} 
-                                    key={ans.answerId}
-                                >
-                                    {ans.content}
-                                </Box>
-                            ))}
-                    </Paper>
-                </Box>
-                
-                {surveyData.questionData?.map((quest: QuestionInfoType) => (
-                    <Box sx={{ display:"flex" }} key={quest.questId}>
-                        <Paper sx={{...centerStyle, width:"60%"}}>
-                                {quest.content}
+            {!surveyData.surveyTitle ? 
+                <CircularProgress color="success" sx={{alignSelf: 'center'}}/> :
+                <Stack spacing={2}>
+                    <Typography variant="h4" color="primary.main" sx={{textAlign: "center"}}>
+                        {`< ${surveyData.surveyTitle} >`}
+                    </Typography>
+                    <Box sx={{display:"flex"}}>
+                        <Paper sx={{...centerStyle, width:"60%", backgroundColor: "primary.main"}}>
+                            <Typography sx={{color: "white"}}>
+                                질문
+                            </Typography>
                         </Paper>
-                        <Paper sx={{ width:"40%", height:"3rem"}}>
-                            <RadioGroup row
-                                onChange={changeScore}>
-                                {surveyData.answerData?.map((ans : AnswerInfoType) => (
-                                    <Box sx={{textAlign:"center", width:100/(surveyData.answerData.length) + "%"}}
-                                        key={quest.questId* 1000 + ans.answerId}>
-                                        <Radio
-                                            value={ans.answerId}
-                                            name={quest.questId + ""}
-                                        />
+                        <Paper sx={{...centerStyle, width:"40%", backgroundColor: "primary.main"}}>
+                                {surveyData.answerData?.map(ans => (
+                                    <Box 
+                                        sx={{ 
+                                            textAlign:"center", 
+                                            width: 100/(surveyData.answerData.length) + "%", 
+                                            fontSize: "0.9rem",
+                                            color: "white",
+                                        }} 
+                                        key={ans.answerId}
+                                    >
+                                        {ans.content}
                                     </Box>
                                 ))}
-                            </RadioGroup>
                         </Paper>
                     </Box>
-                ))}
-                <Button 
-                    variant="outlined"
-                    sx={{width: "70%", alignSelf: "center"}}
-                    disabled = {!isBtnActive}
-                    onClick={calcTotalScore}>
-                    결과 확인
-                </Button>
-                {totalScore !== -1 &&
-                    <Typography 
-                        sx={{textAlign: "center"}} 
-                        color="primary.main"
-                    >
-                        총점 : {totalScore}
-                    </Typography>
-                }
-                {props.isAdmin &&
+                    
+                    {surveyData.questionData?.map((quest: QuestionInfoType) => (
+                        <Box sx={{ display:"flex" }} key={quest.questId}>
+                            <Paper sx={{...centerStyle, width:"60%"}}>
+                                    {quest.content}
+                            </Paper>
+                            <Paper sx={{ width:"40%", height:"3rem"}}>
+                                <RadioGroup row
+                                    onChange={changeScore}>
+                                    {surveyData.answerData?.map((ans : AnswerInfoType) => (
+                                        <Box sx={{textAlign:"center", width:100/(surveyData.answerData.length) + "%"}}
+                                            key={quest.questId* 1000 + ans.answerId}>
+                                            <Radio
+                                                value={ans.answerId}
+                                                name={quest.questId + ""}
+                                            />
+                                        </Box>
+                                    ))}
+                                </RadioGroup>
+                            </Paper>
+                        </Box>
+                    ))}
                     <Button 
                         variant="outlined"
-                        sx={{width: "70%", alignSelf: "center", color: "gray"}}
-                        onClick={deleteButtonClickHandler}>
-                        설문지 삭제하기
+                        sx={{width: "70%", alignSelf: "center"}}
+                        disabled = {!isBtnActive}
+                        onClick={calcTotalScore}>
+                        결과 확인
                     </Button>
-                }
-            </Stack>
+                    {totalScore !== -1 &&
+                        <Typography 
+                            sx={{textAlign: "center"}} 
+                            color="primary.main"
+                        >
+                            총점 : {totalScore}
+                        </Typography>
+                    }
+                    {props.isAdmin &&
+                        <Button 
+                            variant="outlined"
+                            sx={{width: "70%", alignSelf: "center", color: "gray"}}
+                            onClick={deleteButtonClickHandler}>
+                            설문지 삭제하기
+                        </Button>
+                    }
+                </Stack>   
+            }
         </Container>
     );
 }

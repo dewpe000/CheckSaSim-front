@@ -1,5 +1,5 @@
 import { useState, ChangeEvent } from 'react';
-import { Box, Typography, Modal,
+import { Box, Typography, Modal, CircularProgress,
     Button, TextField, Alert, Stack } from '@mui/material';
 
 interface LoginModalProps {
@@ -9,11 +9,15 @@ interface LoginModalProps {
 }
 export function LoginModal(props : LoginModalProps) {
     const [fieldCheck, setFieldCheck] = useState(false)
+    const [circularBar, setCircularBar] = useState(false)
     const [id, setId] = useState("")
     const [pw, setPw] = useState("")
     const [loginSuccess, setLoginSuccess] = useState("")
     // "error" : 에러가 발생했습니다. "fail" : 로그인 실패
 
+    const sleep = (ms: number) => {
+        return new Promise((resolve) => setTimeout(resolve, ms))
+    }
     const idChangeHandler = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setId(e.target.value);
     }
@@ -25,6 +29,8 @@ export function LoginModal(props : LoginModalProps) {
             setFieldCheck(true);
             return;
         }
+        setCircularBar(true)
+        await sleep(1000);
         const res = await fetch('http://13.209.90.70:80/user/login',{
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -34,6 +40,8 @@ export function LoginModal(props : LoginModalProps) {
             })
         })
         const data = await res;
+        setCircularBar(false);
+
         if (data.status === 200) {
             setLoginSuccess("success");
             props.onChangeIsAdmin(true);
@@ -77,6 +85,9 @@ export function LoginModal(props : LoginModalProps) {
                     }
                     {loginSuccess === "fail" &&
                         <Alert severity="warning">아이디 혹은 패스워드가 잘못되었습니다.</Alert>
+                    }
+                    {circularBar &&
+                        <CircularProgress color="success" sx={{alignSelf: 'center', mt: 1}}/>
                     }
                 </Stack>
             </Box>
