@@ -13,7 +13,7 @@ export function Survey(props : SurveyProps) {
     const navigate = useNavigate();
     
     const getSurvey = async () => {
-        const res = await fetch(`http://13.209.90.70:80/survey/${id}`, {
+        const res = await fetch(`https://sasim.heegh.store/survey/${id}`, {
             method: "GET",
         })
         const data = await res.json();
@@ -106,7 +106,7 @@ export function Survey(props : SurveyProps) {
     };
 
     const deleteButtonClickHandler = async () => {
-        await fetch(`http://13.209.90.70:80/survey/${id}`, {
+        await fetch(`https://sasim.heegh.store/survey/${id}`, {
             method: 'DELETE',
         })
         props.getDataAfterDel();

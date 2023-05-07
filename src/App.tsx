@@ -12,7 +12,7 @@ import './App.css';
 function App() {
   const [surveyData, setSurveyData]  = useState<SurveyMetaDataType[]>([])
   const getRecentData = async () => {
-    const res = await fetch('http://13.209.90.70:80/survey', {
+    const res = await fetch('https://sasim.heegh.store/survey', {
       method: "GET"
     })
     const data = await res.json()
