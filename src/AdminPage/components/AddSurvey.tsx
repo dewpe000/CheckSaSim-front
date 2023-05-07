@@ -1,22 +1,23 @@
 import { Container, Stack, Select, SelectChangeEvent, MenuItem, 
     InputLabel, TextField, Checkbox, Box, Button, Zoom} from '@mui/material';
 import { useState, useRef, ChangeEvent } from 'react';
-import { newSurveyDataType } from '../../UserPage/Interfaces';
+import { NewSurveyDataType, SurveyPostReqType } from '../../UserPage/Interfaces';
+import { click } from '@testing-library/user-event/dist/click';
 
 export function AddSurvey() {
     const [weekNum, setWeekNum] = useState<number>(0);
     const [numOfAnswer, setNumOfAnswer] = useState<number>(0);
     const [numOfQuest, setNumOfQuest] = useState<number>(0);
-
-    const stackItemSize = 60;
-
-    const outputData = useRef<newSurveyDataType>({
-        weekNum : -1,
+    const [isSubmitBtnClicked, setIsSubmitBtnClicked] = useState<boolean>(false);
+    const [outputData, setOutputData] = useState<NewSurveyDataType>({
         surveyTitle : '',
         answerList : [],
         questList : [],
         isReverseList: [] 
-    } )
+    })
+
+    const stackItemSize = 60;
+
 
     const candidateWeekNum : number[] = Array.from({length:15}, (v,i)=>i+2); 
     const candidateNumAns : number[] = Array.from({length:9}, (v,i)=>i+2); 
@@ -32,6 +33,7 @@ export function AddSurvey() {
                             답변 {i}
                         </InputLabel>
                         <TextField placeholder='검사 제목을 입력해주세요' 
+                            error={isSubmitBtnClicked && !outputData.answerList[i - 1]}
                             onChange={(e) => changeAnswerContent(e, i-1)}/>
                     </Stack>
                 </Zoom>             
@@ -41,9 +43,9 @@ export function AddSurvey() {
     }
 
     const getQuestList  = (num : number) => {
-        let answerList = [];
+        let questList = [];
         for(let i = 1; i <= num; i++) {
-            answerList.push(          
+            questList.push(          
                 <Zoom in={true} key={i}>  
                     <Stack sx={{width:stackItemSize + "%"}} key={i}>
                         <Box sx={{display:"flex", alignItems:"end"}}>
@@ -54,49 +56,112 @@ export function AddSurvey() {
                         </Box>
                             <TextField sx={{ size: 'medium' }}
                                 placeholder='검사 제목을 입력해주세요'
+                                error={isSubmitBtnClicked && !outputData.questList[i - 1]}
                                 onChange={(e) => changeQuestContent(e, i - 1)} />
                     </Stack>
                 </Zoom>
             )
         }
-        return answerList;
+        return questList;
     }
 
     const changeWeekNum = (event: SelectChangeEvent) => {
-        outputData.current.weekNum = Number(event.target.value);
         setWeekNum(Number(event.target.value));
     };
 
     const changeSurveyTitle = (event: ChangeEvent<HTMLInputElement>) => {
-        outputData.current.surveyTitle = event.target.value;
+        let temp : NewSurveyDataType = {...outputData};
+        temp.surveyTitle = event.target.value;
+        setOutputData(temp);
     }
 
     const changeAnswerContent = (event : ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx : number) => {
-        outputData.current.answerList[idx] = event.target.value;
+        let temp : NewSurveyDataType = {...outputData};
+        temp.answerList[idx] = event.target.value;
+        setOutputData(temp);
     }
 
     const changeQuestContent = (event : ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx : number) => {
-        outputData.current.questList[idx] = event.target.value;
+        let temp : NewSurveyDataType = {...outputData};
+        temp.questList[idx] = event.target.value;
+        setOutputData(temp);
     }
 
     const changeIsReverse = (event : ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx : number) => {
-        outputData.current.isReverseList[idx] = event.target.value;
+        let temp : NewSurveyDataType = {...outputData};
+        temp.isReverseList[idx] = event.target.value;
+        setOutputData(temp);
     }
 
 
     const changeNumOfAnswer = (event : SelectChangeEvent) => {
-        outputData.current.answerList.length = Number(event.target.value); 
+        let temp : NewSurveyDataType = {...outputData};
+        temp.answerList.length = Number(event.target.value);
+        setOutputData(temp); 
         setNumOfAnswer(Number(event.target.value));
     };
 
     const changeNumOfQuest = (event : SelectChangeEvent) => {
-        outputData.current.questList.length = Number(event.target.value); 
-        outputData.current.isReverseList.length = Number(event.target.value); 
+        let temp : NewSurveyDataType = {...outputData};
+        temp.questList.length = Number(event.target.value);
+        temp.isReverseList.length = Number(event.target.value);
+        setOutputData(temp); 
         setNumOfQuest(Number(event.target.value));
     };
 
-    const sumbitBtnClickHandler  = async () => {
-        console.log(outputData)
+    const submitBtnClickHandler  = async () => {
+        let surveyPostData : SurveyPostReqType = {
+            title : "",
+            week_num : "",
+            type : "",
+            answers : [],
+            questions : []
+        };
+
+        setIsSubmitBtnClicked(true)
+
+        if(outputData.surveyTitle === '' && weekNum === 0) {
+            console.log("fail : add survey")
+            return;
+        }
+
+        surveyPostData.title = outputData.surveyTitle;
+        surveyPostData.week_num = String(weekNum);
+        surveyPostData.type = "NONE";
+        
+        for(let i = 0; i < numOfAnswer; i++) {
+            if(!outputData.answerList[i]) {
+                console.log("fail : add survey")
+                return;
+            }
+            surveyPostData.answers.push(outputData.answerList[i]);
+        }
+        for(let i = 0; i < numOfQuest; i++) {
+            if(!outputData.questList[i]) {
+                console.log("fail : add survey")
+                return;
+            }
+
+            if(outputData.isReverseList[i] == "on") {
+                outputData.isReverseList[i] = true;
+            } 
+            else {
+                outputData.isReverseList[i] = false;
+            }
+            surveyPostData.questions.push({ 
+                body : outputData.questList[i],
+                is_reverse : outputData.isReverseList[i] as boolean,
+                type : "NONE"
+            });
+        }
+
+        fetch("http://13.209.90.70:80/survey", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(surveyPostData),
+          }).then((response) => console.log(response));
     }
 
 
@@ -108,7 +173,10 @@ export function AddSurvey() {
                         주차
                     </InputLabel>
                     <Select onChange={changeWeekNum}
-                        value={weekNum >= 2 ? String(weekNum) : ''}>
+                        value={weekNum >= 2 ? String(weekNum) : ''}
+                        error={isSubmitBtnClicked && weekNum === 0}
+                        >
+
                         {candidateWeekNum.map(num => (
                             <MenuItem key={num} value={num}>{num}</MenuItem>
                         ))}
@@ -118,7 +186,11 @@ export function AddSurvey() {
                     <InputLabel shrink sx={{fontSize:"25px"}}>
                         검사 제목
                     </InputLabel>
-                    <TextField placeholder='검사 제목을 입력해주세요' onChange={changeSurveyTitle}></TextField>
+                    <TextField placeholder='검사 제목을 입력해주세요' 
+                        onChange={changeSurveyTitle}
+                        error={isSubmitBtnClicked && outputData.surveyTitle === ''}
+                    >  
+                    </TextField>
                 </Stack>
                 <Box sx={{border:"solid 0.1px #ced4da", width:"70%"}}/>
                 <Stack sx={{width:stackItemSize + "%"}}>
@@ -126,7 +198,9 @@ export function AddSurvey() {
                         답변 수
                     </InputLabel>
                     <Select onChange={changeNumOfAnswer}
-                        value={numOfAnswer >= 2 ? String(numOfAnswer) : ''}>
+                        value={numOfAnswer >= 2 ? String(numOfAnswer) : ''}
+                        error={isSubmitBtnClicked && numOfAnswer < 2}
+                    >
                         {candidateNumAns.map(num => (
                             <MenuItem key={num} value={num}>{num}</MenuItem>
                         ))}
@@ -139,7 +213,9 @@ export function AddSurvey() {
                         질문 수
                     </InputLabel>
                     <Select onChange={changeNumOfQuest}
-                        value={numOfQuest >= 2 ? String(numOfQuest) : ''}>
+                        value={numOfQuest >= 2 ? String(numOfQuest) : ''}
+                        error={isSubmitBtnClicked && numOfQuest < 2}
+                        >
                         {candidateNumQuest.map(num => (
                             <MenuItem key={num} value={num}>{num}</MenuItem>
                         ))}
@@ -150,7 +226,7 @@ export function AddSurvey() {
                 <Button
                     variant="outlined"
                     sx={{ width: "50%", height: "4rem" }}
-                    onClick={sumbitBtnClickHandler}>
+                    onClick={submitBtnClickHandler}>
                     제출하기
                 </Button>
         </Stack>
