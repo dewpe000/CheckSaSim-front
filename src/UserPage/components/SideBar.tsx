@@ -1,5 +1,6 @@
 import { List, ListItemText, ListItemButton, 
     ListItem, SwipeableDrawer, Box } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 import { SurveyMetaDataType } from '../Interfaces';
 
 interface SideBarProps {
@@ -11,6 +12,7 @@ interface SideBarProps {
 export function SideBar(props: SideBarProps) {
     const isAdmin = props.isAdmin;
     const surveyInfo = props.surveyInfo;
+    const navigate = useNavigate()
 
     const toggleDrawer =
         (open: boolean) =>
@@ -27,9 +29,12 @@ export function SideBar(props: SideBarProps) {
             props.onChangeBarOpen(open);
     };
     const listItemClickHandler = (id: number) => {
-        console.log(id)
-        // survey 이동
+        navigate(`/survey/${id}`)
     }
+    const moveToAddSurvey = () => {
+        navigate(`/add`)
+    }
+
     const list = () => (
         <Box
           role="presentation"
@@ -46,9 +51,9 @@ export function SideBar(props: SideBarProps) {
               </ListItem>
             ))}
             {isAdmin && 
-                <ListItem disablePadding>
+                <ListItem disablePadding onClick={moveToAddSurvey}>
                     <ListItemButton>
-                        <ListItemText primary="설문 추가하기" sx={{textAlign: "center"}}/>
+                        <ListItemText primary="설문 추가하기" sx={{textAlign: "center", color:"primary.main"}}/>
                     </ListItemButton>
                 </ListItem>
             }
