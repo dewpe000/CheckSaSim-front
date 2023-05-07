@@ -1,10 +1,14 @@
 import { Container, Stack, Select, SelectChangeEvent, MenuItem, 
     InputLabel, TextField, Checkbox, Box, Button, Zoom} from '@mui/material';
-import { useState, useRef, ChangeEvent } from 'react';
+import { useState, ChangeEvent } from 'react';
+import { useNavigate } from "react-router"
 import { NewSurveyDataType, SurveyPostReqType } from '../../UserPage/Interfaces';
-import { click } from '@testing-library/user-event/dist/click';
 
-export function AddSurvey() {
+interface AddSurveyProps {
+    getDataAfterAdd: () => Promise<void>,
+}
+export function AddSurvey(props: AddSurveyProps) {
+    const navigate = useNavigate();
     const [weekNum, setWeekNum] = useState<number>(0);
     const [numOfAnswer, setNumOfAnswer] = useState<number>(0);
     const [numOfQuest, setNumOfQuest] = useState<number>(0);
@@ -155,18 +159,21 @@ export function AddSurvey() {
             });
         }
 
-        fetch("http://13.209.90.70:80/survey", {
+        await fetch("http://13.209.90.70:80/survey", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(surveyPostData),
-          }).then((response) => console.log(response));
+        });
+        
+        props.getDataAfterAdd();
+        navigate('/');
     }
 
 
     return (         
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{mt: 3, mb: 3}}>
             <Stack spacing={3} alignItems="center">
                 <Stack sx={{width:stackItemSize + "%"}}>
                     <InputLabel shrink sx={{fontSize:"25px"}}>

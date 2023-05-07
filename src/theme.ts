@@ -10,9 +10,9 @@ export const globalTheme = createTheme({
       },
     },
     typography: {
-      fontFamily: 'Noto Sans Korean, Ubuntu',
+      fontFamily: "nanum",
     },
     shape: {
       borderRadius: 2,
-    }
+    },
 });

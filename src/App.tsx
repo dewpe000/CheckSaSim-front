@@ -7,6 +7,7 @@ import { SurveyMetaDataType } from './UserPage/Interfaces';
 import { MainPage, SideBar, Survey } from './UserPage';
 import { globalTheme } from './theme';
 import { AddSurvey } from './AdminPage/components/AddSurvey';
+import './App.css';
 
 function App() {
   const [surveyData, setSurveyData]  = useState<SurveyMetaDataType[]>([])
@@ -30,7 +31,6 @@ function App() {
   }, [])
 
   const [barOpen, setBarOpen] = useState(false);
-  // const [isAdmin, setIsAdmin] = useState(false);
   const isAdmin = useRef<boolean>(false)
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -38,7 +38,6 @@ function App() {
     setBarOpen(open);
   }
   const changeIsAdmin = (admin: boolean) => {
-    // setIsAdmin(isAdmin);
     isAdmin.current = admin;
   }
   const changeModalOpen = (open: boolean) => {
@@ -69,7 +68,7 @@ function App() {
         <Routes>
           <Route path="/survey/:id" element={<Survey isAdmin={isAdmin.current} getDataAfterDel={getRecentData}/>}></Route>
           <Route path="/" element={<MainPage recentSurvey={surveyData}/>}></Route>
-          <Route path="/add" element={<AddSurvey />}></Route>
+          <Route path="/add" element={<AddSurvey getDataAfterAdd={getRecentData} />}></Route>
         </Routes>
       </Router>
     </ThemeProvider>
