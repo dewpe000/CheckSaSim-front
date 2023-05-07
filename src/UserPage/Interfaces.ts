@@ -13,12 +13,14 @@ interface AnswerInfoType {
 interface SurveyInfoType {
     surveyId : number;
     surveyTitle : string;
+    surveyType : string;
     questionData : QuestionInfoType[];
     answerData : AnswerInfoType[];
 };
 
 interface NewSurveyDataType {
     surveyTitle : string;
+    surveyType : string;
     answerList : any;
     questList : any;
     isReverseList : (boolean | string)[];
