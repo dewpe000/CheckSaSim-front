@@ -53,7 +53,7 @@ export function Survey(props : SurveyProps) {
 
         setSurveyData(initialSurveyData)
         setIsBtnActive(false)
-        setTotalScore(-1);
+        setTotalScore(123456789);
     }
 
     useEffect(() => {
@@ -61,7 +61,7 @@ export function Survey(props : SurveyProps) {
     }, [id])
 
     let [isBtnActive, setIsBtnActive] = useState(false);
-    let [totalScore, setTotalScore] = useState(-1);
+    let [totalScore, setTotalScore] = useState(123456789);
     let [surveyData, setSurveyData] = useState({} as SurveyInfoType);
 
 
@@ -178,7 +178,7 @@ export function Survey(props : SurveyProps) {
                         onClick={calcTotalScore}>
                         결과 확인
                     </Button>
-                    {totalScore !== -1 &&
+                    {totalScore !== 123456789 &&
                         <Typography 
                             sx={{textAlign: "center"}} 
                             color="primary.main"
