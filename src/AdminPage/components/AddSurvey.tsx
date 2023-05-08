@@ -2,7 +2,7 @@ import { Container, Stack, Select, SelectChangeEvent, MenuItem,
     InputLabel, TextField, Checkbox, Box, Button, Zoom, Typography, FormControlLabel} from '@mui/material';
 import { useState, ChangeEvent } from 'react';
 import { useNavigate } from "react-router"
-import { NewSurveyDataType, SurveyPostReqType } from '../../UserPage/Interfaces';
+import { SurveyPostReqType } from '../../UserPage/Interfaces';
 
 interface AddSurveyProps {
     getDataAfterAdd: () => Promise<void>,
@@ -14,9 +14,8 @@ export function AddSurvey(props: AddSurveyProps) {
     const [weekNum, setWeekNum] = useState<number>(0);
     const [surveyTitle, setSurveyTitle] = useState<string>("");
     const [surveyType, setSurveyType] = useState<string>("SCORE");
-    // const [numOfAnswer, setNumOfAnswer] = useState<number>(0);
-    // const [numOfQuest, setNumOfQuest] = useState<number>(0);
     const [answerList, setAnswerList] = useState<string[]>([]);
+    const [answerScoreList, setAnswerScoreList] = useState<string[]>([]);
     const [questList, setQuestList] = useState<string[]>([]);
     const [isReverseList, setIsReverseList] = useState<(string|boolean)[]>([]);
     const [isSubmitBtnClicked, setIsSubmitBtnClicked] = useState<boolean>(false);
@@ -50,7 +49,11 @@ export function AddSurvey(props: AddSurveyProps) {
         temp[idx] = event.target.value;
         setAnswerList(temp);
     }
-
+    const changeAnswerScore = (event : ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx : number) => {
+        let temp : string[] = [...answerScoreList];
+        temp[idx] = event.target.value;
+        setAnswerScoreList(temp);
+    }
     const changeQuestContent = (event : ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, idx : number) => {
         let temp : string[] = [...questList];
         temp[idx] = event.target.value;
@@ -78,9 +81,18 @@ export function AddSurvey(props: AddSurveyProps) {
                 <Zoom in={true} key={i}>
                     <Stack sx={{width:stackItemSize + "%"}}>
                         {renderInputLabel(`답변 ${i}`)}
+                        <Box sx={{display: "flex"}}>
                         <TextField placeholder='답변을 입력해주세요' 
                             error={isSubmitBtnClicked && !answerList[i - 1]}
-                            onChange={(e) => changeAnswerContent(e, i-1)}/>
+                            onChange={(e) => changeAnswerContent(e, i-1)}
+                            sx={{width : '85%'}}/>
+                        <TextField placeholder='점수' 
+                            error={isSubmitBtnClicked && !answerScoreList[i - 1]}
+                            onChange={(e) => changeAnswerScore(e, i-1)}
+                            inputProps={{type:'number'}}
+                            sx={{width : '15%'}}/>
+                        </Box>
+
                     </Stack>
                 </Zoom>             
             )
@@ -126,12 +138,13 @@ export function AddSurvey(props: AddSurveyProps) {
             week_num : "",
             type : "",
             answers : [],
+            scores : [],
             questions : []
         };
 
         setIsSubmitBtnClicked(true)
 
-        if(surveyTitle === '' && weekNum === 0) {
+        if(surveyTitle === '' || weekNum === 0 || answerList.length === 0 || questList.length == 0) {
             console.log("fail : add survey")
             return;
         }
@@ -139,7 +152,7 @@ export function AddSurvey(props: AddSurveyProps) {
         surveyPostData.title = surveyTitle;
         surveyPostData.week_num = String(weekNum);
         surveyPostData.type = surveyType;
-        
+
         for(let i = 0; i < questList.length; i++) {
             if(!questList[i]) {
                 console.log("fail : add survey")
@@ -161,15 +174,17 @@ export function AddSurvey(props: AddSurveyProps) {
 
         if(surveyType === "SCORE") {
             for(let i = 0; i < answerList.length; i++) {
-                if(!answerList[i]) {
+                if(!answerList[i] || !answerScoreList[i]) {
                     console.log("fail : add survey")
                     return;
                 }
                 surveyPostData.answers.push(answerList[i]);
+                surveyPostData.scores.push(answerScoreList[i]);
             }
         }
         else {
             surveyPostData.answers = ["예", "아니오"];
+            surveyPostData.scores = ['1', '0'];
         }
 
 

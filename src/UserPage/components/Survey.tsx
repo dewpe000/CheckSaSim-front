@@ -17,6 +17,8 @@ export function Survey(props : SurveyProps) {
             method: "GET",
         })
         const data = await res.json();
+
+        console.log(data)
         const initialSurveyData = {
             surveyId: data.results.id,
             surveyTitle: data.results.title,
@@ -25,18 +27,19 @@ export function Survey(props : SurveyProps) {
                 {
                     content: ques.body,
                     questId: ques.id,
-                    score: 0,
+                    ansIdx: -1,
                     isReverse: ques.is_reverse,
                 }
             )),
             answerData: data.results.answers.map((ans: any, idx: number) => (
                 {
                     content: ans,
-                    answerId: idx+1,
+                    score : Number(data.results.scores[idx]),
+                    answerId: idx,
                 }
             ))
         }
-        initialSurveyData.questionData.sort((q1 : QuestionInfoType, q2: QuestionInfoType) => {
+        initialSurveyData.questionData.sort((q1 : QuestionInfoType, q2 : QuestionInfoType) => {
             if(q1.questId > q2.questId) {
                 return 1;
             }
@@ -49,6 +52,8 @@ export function Survey(props : SurveyProps) {
         })
 
         setSurveyData(initialSurveyData)
+        setIsBtnActive(false)
+        setTotalScore(-1);
     }
 
     useEffect(() => {
@@ -61,19 +66,19 @@ export function Survey(props : SurveyProps) {
 
 
     // 체크 박스 변경시 이벤트
-    const changeScore = (event: ChangeEvent<HTMLInputElement>) => {
+    const changeAnsIdx = (event: ChangeEvent<HTMLInputElement>) => {
 
-        let hasZero : boolean = false;
+        let hasNoCheck : boolean = false;
         surveyData.questionData.forEach(function (quest: QuestionInfoType) {
             if (quest.questId === Number(event.target.name)) {
-                quest.score = Number(event.target.value);
+                quest.ansIdx = Number(event.target.value);
             }
-            if (quest.score === 0) {
-                hasZero = true;
+            if (quest.ansIdx === -1) {
+                hasNoCheck = true;
             }
         })
         
-        setIsBtnActive(!hasZero);
+        setIsBtnActive(!hasNoCheck);
     };
 
     //최종 점수 계산
@@ -84,10 +89,10 @@ export function Survey(props : SurveyProps) {
     
             surveyData.questionData.forEach((quest : QuestionInfoType) => {
                 if(quest.isReverse) {
-                    sum += (surveyData.answerData.length) - quest.score + 1;
+                    sum += surveyData.answerData[(surveyData.answerData.length) - quest.ansIdx - 1].score;
                 }
                 else {
-                    sum += quest.score;
+                    sum += surveyData.answerData[quest.ansIdx].score;
                 }
             })
     
@@ -96,7 +101,7 @@ export function Survey(props : SurveyProps) {
         else {
             let numOfYes = 0;
             surveyData.questionData.forEach((quest : QuestionInfoType) => {
-                if(quest.score == 1) {
+                if(surveyData.answerData[quest.ansIdx].score == 1) {
                     numOfYes += 1;
                 }
             })
@@ -152,7 +157,7 @@ export function Survey(props : SurveyProps) {
                             </Paper>
                             <Paper sx={{ width:"40%", height:"3rem"}}>
                                 <RadioGroup row
-                                    onChange={changeScore}>
+                                    onChange={changeAnsIdx}>
                                     {surveyData.answerData?.map((ans : AnswerInfoType) => (
                                         <Box sx={{textAlign:"center", width:100/(surveyData.answerData.length) + "%"}}
                                             key={quest.questId* 1000 + ans.answerId}>
@@ -178,7 +183,7 @@ export function Survey(props : SurveyProps) {
                             sx={{textAlign: "center"}} 
                             color="primary.main"
                         >   { surveyData.surveyType === 'SCORE' ?
-                                <>총점 : + {totalScore}</> : 
+                                <>총점 : {totalScore}</> : 
                                 <>예 : {totalScore}   아니요 : {surveyData.questionData.length - totalScore}</>
                             }
                         </Typography>
