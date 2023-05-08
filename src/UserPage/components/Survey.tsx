@@ -120,7 +120,7 @@ export function Survey(props : SurveyProps) {
 
 
     return (
-        <Container maxWidth="lg" sx={{mt: 3, mb: 3}}>
+        <Container maxWidth="xl" sx={{mt: 3, mb: 3}}>
             {!surveyData.surveyTitle ? 
                 <CircularProgress color="success" sx={{alignSelf: 'center'}}/> :
                 <Stack spacing={2}>
