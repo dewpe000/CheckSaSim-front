@@ -43,9 +43,6 @@ export function LoginModal(props : LoginModalProps) {
             })
         })
 
-        setCookie('id', "QQQQQQQQQ")
-
-        console.log(res.headers.get('set-cookie'))
         const data = res;
         setCircularBar(false);
 

@@ -190,6 +190,7 @@ export function AddSurvey(props: AddSurveyProps) {
 
         await fetch("https://sasim.heegh.store/survey", {
             method: "POST",
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
