@@ -15,6 +15,7 @@ export function Survey(props : SurveyProps) {
     const getSurvey = async () => {
         const res = await fetch(`https://sasim.heegh.store/survey/${id}`, {
             method: "GET",
+            credentials: "include"
         })
         const data = await res.json();
 
@@ -113,6 +114,7 @@ export function Survey(props : SurveyProps) {
     const deleteButtonClickHandler = async () => {
         await fetch(`https://sasim.heegh.store/survey/${id}`, {
             method: 'DELETE',
+            credentials: "include"
         })
         props.getDataAfterDel();
         navigate('/');
