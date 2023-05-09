@@ -13,6 +13,7 @@ function App() {
   const [surveyData, setSurveyData]  = useState<SurveyMetaDataType[]>([])
   const getRecentData = async () => {
     const res = await fetch('https://sasim.heegh.store/survey', {
+      credentials: "include",
       method: "GET"
     })
     const data = await res.json()
