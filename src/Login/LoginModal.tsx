@@ -1,6 +1,7 @@
 import { useState, ChangeEvent } from 'react';
 import { Box, Typography, Modal, CircularProgress,
     Button, TextField, Alert, Stack } from '@mui/material';
+import { useCookies } from 'react-cookie'
 
 interface LoginModalProps {
     modalOpen: boolean,
@@ -13,6 +14,7 @@ export function LoginModal(props : LoginModalProps) {
     const [id, setId] = useState("")
     const [pw, setPw] = useState("")
     const [loginSuccess, setLoginSuccess] = useState("")
+    const [cookies, setCookie] = useCookies(['id']);
     // "error" : 에러가 발생했습니다. "fail" : 로그인 실패
 
     const sleep = (ms: number) => {
@@ -33,13 +35,15 @@ export function LoginModal(props : LoginModalProps) {
         await sleep(1000);
         const res = await fetch('https://sasim.heegh.store/user/login',{
             method: 'POST',
+            credentials: "include",
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 username : id,
                 password: pw,
             })
         })
-        const data = await res;
+
+        const data = res;
         setCircularBar(false);
 
         if (data.status === 200) {

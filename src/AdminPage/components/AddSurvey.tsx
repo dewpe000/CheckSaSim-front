@@ -144,7 +144,7 @@ export function AddSurvey(props: AddSurveyProps) {
 
         setIsSubmitBtnClicked(true)
 
-        if(surveyTitle === '' || weekNum === 0 || answerList.length === 0 || questList.length == 0) {
+        if(surveyTitle === '' || weekNum === 0 || (surveyType === 'SCORE' && answerList.length === 0) || questList.length == 0) {
             console.log("fail : add survey")
             return;
         }
@@ -190,6 +190,7 @@ export function AddSurvey(props: AddSurveyProps) {
 
         await fetch("https://sasim.heegh.store/survey", {
             method: "POST",
+            credentials: "include",
             headers: {
               "Content-Type": "application/json",
             },
